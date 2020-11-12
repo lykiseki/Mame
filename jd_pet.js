@@ -431,7 +431,7 @@ function readShareCode() {
             //console.log(`随机取个${randomCount}码放到您固定的互助码后面`)
            // data = JSON.parse(data);
           //}
-        }
+        //}
       } catch (e) {
         $.logErr(e, resp)
       } finally {
