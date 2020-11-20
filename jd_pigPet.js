@@ -1,3 +1,4 @@
+
 /*
 京东金融养猪猪
 一键开完所有的宝箱功能。耗时70秒
@@ -46,11 +47,6 @@ if ($.isNode()) {
         }
         continue
       }
-      message = '';
-      subTitle = '';
-      goodsUrl = '';
-      taskInfoKey = [];
-      option = {};
       await jdPigPet();
     }
   }
