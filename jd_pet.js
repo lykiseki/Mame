@@ -1,7 +1,7 @@
 /*
 /*
 东东萌宠 更新地址： https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_pet.js
-更新时间：2020-11-07
+更新时间：2020-11-21
 已支持IOS双京东账号,Node.js支持N个京东账号
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 
@@ -31,9 +31,14 @@ let cookiesArr = [], cookie = '', jdPetShareArr = [], isBox = false, notify, new
 //下面给出两个账号的填写示例（iOS只支持2个京东账号）
 let shareCodes = [ // IOS本地脚本用户这个列表填入你要助力的好友的shareCode
    //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
-  'MTAxODc2NTEzNTAwMDAwMDAwMDAwMzA3Nw==@MTAxODc2NTE0NzAwMDAwMDAwMDAwNTQ3OQ==@MTAxODc2NTEzMzAwMDAwMDAxMDQzMzM2MQ==',
+   //ly-羊-梦-妃
+  'MTAxODc2NTEzNTAwMDAwMDAwMDAwMzA3Nw==@MTAxODc2NTEzMzAwMDAwMDAxMDQzMzM2MQ==@MTE1NDUyMjEwMDAwMDAwMzk5NDg3MTk=@MTE1NDUyMjEwMDAwMDAwNDAzNTc5NjE=',
   //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
-  'MTAxODc2NTEzNTAwMDAwMDAwMDAwMzA3Nw==@MTAxODc2NTE0NzAwMDAwMDAwMDAwNTQ3OQ==@MTAxODc2NTEzMzAwMDAwMDAxMDQzMzM2MQ==',
+  //ly-离-梦-妃
+  'MTAxODc2NTEzNTAwMDAwMDAwMDAwMzA3Nw==@MTAxODc2NTE0NzAwMDAwMDAwMDAwNTQ3OQ==@MTE1NDUyMjEwMDAwMDAwMzk5NDg3MTk=@MTE1NDUyMjEwMDAwMDAwNDAzNTc5NjE=',
+  //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
+  //ly-离-羊-梦 
+  'MTAxODc2NTEzNTAwMDAwMDAwMDAwMzA3Nw==@MTAxODc2NTE0NzAwMDAwMDAwMDAwNTQ3OQ==@MTAxODc2NTEzMzAwMDAwMDAxMDQzMzM2MQ==@MTE1NDUyMjEwMDAwMDAwMzk5NDg3MTk=',
 ]
 let message = '', subTitle = '', option = {};
 let jdNotify = false;//是否关闭通知，false打开通知推送，true关闭通知推送
@@ -57,8 +62,12 @@ let randomCount = 20;
       console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/`, {"open-url": "https://bean.m.jd.com/"});
-        $.setdata('', `CookieJD${i ? i + 1 : "" }`);//cookie失效，故清空cookie。
-        if ($.isNode()) await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+
+        if ($.isNode()) {
+          await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+        } else {
+          $.setdata('', `CookieJD${i ? i + 1 : "" }`);//cookie失效，故清空cookie。$.setdata('', `CookieJD${i ? i + 1 : "" }`);//cookie失效，故清空cookie。
+        }
         continue
       }
       message = '';
@@ -90,12 +99,20 @@ async function jdPet() {
     goodsUrl = $.petInfo.goodsInfo && $.petInfo.goodsInfo.goodsUrl;
     // option['media-url'] = goodsUrl;
     // console.log(`初始化萌宠信息完成: ${JSON.stringify(petInfo)}`);
-    if ($.petInfo.petStatus === 5 && $.petInfo.showHongBaoExchangePop) {
+    if ($.petInfo.petStatus === 5) {
       await slaveHelp();//可以兑换而没有去兑换,也能继续助力好友
       option['open-url'] = "openApp.jdMobile://";
       $.msg($.name, `【提醒⏰】${$.petInfo.goodsInfo.goodsName}已可领取`, '请去京东APP或微信小程序查看', option);
       if ($.isNode()) {
         await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName || $.UserName}奖品已可领取`, `京东账号${$.index} ${$.nickName}\n${$.petInfo.goodsInfo.goodsName}已可领取`);
+      }
+      return
+    } else if ($.petInfo.petStatus === 6) {
+      await slaveHelp();//已领取红包,但未领养新的,也能继续助力好友
+      option['open-url'] = "openApp.jdMobile://";
+      $.msg($.name, `【提醒⏰】已领取红包,但未继续领养新的物品`, '请去京东APP或微信小程序继续领养', option);
+      if ($.isNode()) {
+        await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName || $.UserName}奖品已可领取`, `京东账号${$.index} ${$.nickName}\n已领取红包,但未继续领养新的物品`);
       }
       return
     }
