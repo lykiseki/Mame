@@ -6,7 +6,7 @@ name: jd_small_home
 on:
   workflow_dispatch:
   schedule:
-    - cron: '30 1 * * *'
+    - cron: '30 20 * * *'
   watch:
         types: started
   repository_dispatch:
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          repository:  lyquest/Higashi
+          repository:  lykiseki/Mame
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
