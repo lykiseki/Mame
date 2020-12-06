@@ -93,7 +93,12 @@ async function jdPet() {
   if (initPetTownRes.code === '0' && initPetTownRes.resultCode === '0' && initPetTownRes.message === 'success') {
     $.petInfo = initPetTownRes.result;
     if ($.petInfo.userStatus === 0) {
-      $.msg($.name, '【提示】此账号萌宠活动未开始，请手动去京东APP开启活动\n入口：我的->游戏与互动->查看更多', '', { "open-url": "openapp.jdmoble://" });
+      $.msg($.name, '', `【提示】京东账号${$.index}${$.nickName}\n萌宠活动未开启\n请手动去京东APP开启活动\n入口：我的->游戏与互动->查看更多开启`, { "open-url": "openapp.jdmoble://" });
+      return
+    }
+    if (!$.petInfo.goodsInfo) {
+      $.msg($.name, '', `【提示】京东账号${$.index}${$.nickName}\n暂未选购新的商品`, { "open-url": "openapp.jdmoble://" });
+      await notify.sendNotify(`${$.name} - ${$.index} - ${$.nickName}`, `【提示】京东账号${$.index}${$.nickName}\n暂未选购新的商品`);
       return
     }
     goodsUrl = $.petInfo.goodsInfo && $.petInfo.goodsInfo.goodsUrl;
@@ -142,7 +147,7 @@ async function energyCollect() {
   let function_id = arguments.callee.name.toString();
   const response = await request(function_id);
   // console.log(`收取任务奖励好感度完成:${JSON.stringify(response)}`);
-  if (response.code === '0') {
+  if (response.resultCode === '0') {
     message += `【第${response.result.medalNum + 1}块勋章完成进度】${response.result.medalPercent}%，还需收集${response.result.needCollectEnergy}好感\n`;
     message += `【已获得勋章】${response.result.medalNum}块，还需收集${response.result.needCollectMedalNum}块即可兑换奖品“${$.petInfo.goodsInfo.goodsName}”\n`;
   }
@@ -168,7 +173,7 @@ async function feedPetsAgain() {
       // message += `【剩余狗粮】${$.petInfo.foodAmount}g\n`;
     } else {
       console.log("目前剩余狗粮：【" + foodAmount + "】g,不再继续投食,保留部分狗粮用于完成第二天任务");
-      subTitle = $.petInfo.goodsInfo.goodsName;
+      subTitle = $.petInfo.goodsInfo && $.petInfo.goodsInfo.goodsName;
       // message += `【与爱宠相识】${$.petInfo.meetDays}天\n`;
       // message += `【剩余狗粮】${$.petInfo.foodAmount}g\n`;
     }
@@ -197,9 +202,9 @@ async function doTask() {
   if (threeMealInit && !threeMealInit.finished) {
     if (threeMealInit.timeRange === -1) {
       console.log(`未到三餐时间`);
-      return
+    } else {
+      await threeMealInitFun();
     }
-    await threeMealInitFun();
   }
   if (browseShopsInit && !browseShopsInit.finished) {
     await browseShopsInitFun();
@@ -271,7 +276,7 @@ async function slaveHelp() {
     let response = await request(arguments.callee.name.toString(), {'shareCode': code});
     if (response.code === '0' && response.resultCode === '0') {
       if (response.result.helpStatus === 0) {
-        console.log('已给好友: 【' + response.result.masterNickName + '】助力');
+        console.log('已给好友: 【' + response.result.masterNickName + '】助力成功');
         helpPeoples += response.result.masterNickName + '，';
       } else if (response.result.helpStatus === 1) {
         // 您今日已无助力机会
@@ -445,10 +450,10 @@ function readShareCode() {
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } //else {
           //if (data) {
-            //console.log(`随机取个${randomCount}码放到您固定的互助码后面`)
-           // data = JSON.parse(data);
-          //}
-        //}
+          //  console.log(`随机取个${randomCount}码放到您固定的互助码后面`)
+          //  data = JSON.parse(data);
+         // }
+       // }
       } catch (e) {
         $.logErr(e, resp)
       } finally {
@@ -550,7 +555,7 @@ function TotalBean() {
         "Connection": "keep-alive",
         "Cookie": cookie,
         "Referer": "https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2",
-        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0") : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0")
       }
     }
     $.post(options, (err, resp, data) => {
@@ -582,7 +587,7 @@ function TotalBean() {
 async function request(function_id, body = {}) {
   await $.wait(3000); //歇口气儿, 不然会报操作频繁
   return new Promise((resolve, reject) => {
-    $.get(taskUrl(function_id, body), (err, resp, data) => {
+    $.post(taskUrl(function_id, body), (err, resp, data) => {
       try {
         if (err) {
           console.log('\n东东萌宠: API查询请求失败 ‼️‼️');
@@ -599,12 +604,26 @@ async function request(function_id, body = {}) {
     })
   })
 }
+// function taskUrl(function_id, body = {}) {
+//   return {
+//     url: `${JD_API_HOST}?functionId=${function_id}&appid=wh5&loginWQBiz=pet-town&body=${escape(JSON.stringify(body))}`,
+//     headers: {
+//       Cookie: cookie,
+//       UserAgent: $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0") : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
+//     }
+//   };
+// }
 function taskUrl(function_id, body = {}) {
+  body["version"] = 2;
+  body["channel"] = 'app';
   return {
-    url: `${JD_API_HOST}?functionId=${function_id}&appid=wh5&loginWQBiz=pet-town&body=${escape(JSON.stringify(body))}`,
+    url: `${JD_API_HOST}?functionId=${function_id}`,
+    body: `body=${escape(JSON.stringify(body))}&appid=wh5&loginWQBiz=pet-town&clientVersion=9.0.4`,
     headers: {
-      Cookie: cookie,
-      UserAgent: `Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1`,
+      'Cookie': cookie,
+      'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0") : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
+      'Host': 'api.m.jd.com',
+      'Content-Type': 'application/x-www-form-urlencoded',
     }
   };
 }
