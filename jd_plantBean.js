@@ -33,10 +33,14 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
 //此此内容是IOS用户下载脚本到本地使用，填写互助码的地方，同一京东账号的好友互助码请使用@符号隔开。
 //下面给出两个账号的填写示例（iOS只支持2个京东账号）
 let shareCodes = [ // IOS本地脚本用户这个列表填入你要助力的好友的shareCode
-                   //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
-  'e7lhibzb3zek2lhndcy7dneubx72t4atag55tvq',
-  //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
-  'hetddo3vcdqgtfxbojgiz5goc43h7wlwy7o5jii',
+//铺子-白白-博士
+  'cvdprphj7cixsoqbns6eertieu@zarbh2oaxmrcra7wpvtt5d2jraxz2rrz2natk6y@jc5p3tc7webr7cyahi7hheluai',//账号一的好友shareCode,不同好友中间用@符号隔开
+  //铺子-白白-博士
+  //'cvdprphj7cixsoqbns6eertieu@zarbh2oaxmrcra7wpvtt5d2jraxz2rrz2natk6y@jc5p3tc7webr7cyahi7hheluai',
+    //Ly-白白-博士
+  'w5twvmn6thlgvgffr5mmzvaojsqttperzjydn2q@zarbh2oaxmrcra7wpvtt5d2jraxz2rrz2natk6y@jc5p3tc7webr7cyahi7hheluai',//账号二的好友shareCode，不同好友中间用@符号隔开
+  //Ly-ovo
+  'w5twvmn6thlgvgffr5mmzvaojsqttperzjydn2q@7ptupinhqt7nn4asng6wze3sdi',//账号三的好友shareCode，不同好友中间用@符号隔开,
 ]
 let currentRoundId = null;//本期活动id
 let lastRoundId = null;//上期id
