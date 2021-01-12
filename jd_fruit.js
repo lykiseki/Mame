@@ -31,16 +31,16 @@ let shareCodes = [ // 这个列表填入你要助力的好友的shareCode
    //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
    //ly-梦-妃-羊
   //'4fc147a47a2b45f2ac7e31c3e1315976@ed87892d286f4f7397b1317650dbec57@7ccd98c2058747e6885a9f5931fdbfd0@d28ca23ddb934143801ce74229927ac2',
-  //ly-羊
-    '4fc147a47a2b45f2ac7e31c3e1315976@d28ca23ddb934143801ce74229927ac2',
+  //ly-羊-铺
+    '4fc147a47a2b45f2ac7e31c3e1315976@d28ca23ddb934143801ce74229927ac2@031025a518804a9e9f28a62cd9930da5',
   //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
   //ly-梦-妃-离
   //'4fc147a47a2b45f2ac7e31c3e1315976@ed87892d286f4f7397b1317650dbec57@7ccd98c2058747e6885a9f5931fdbfd0@c7185dd64d3847999cca6b0081495daa',
-   //梦-离
-  'ed87892d286f4f7397b1317650dbec57@c7185dd64d3847999cca6b0081495daa',
+   //梦-离-铺
+  'ed87892d286f4f7397b1317650dbec57@c7185dd64d3847999cca6b0081495daa@031025a518804a9e9f28a62cd9930da5',
   //账号三的好友shareCode,不同好友的shareCode中间用@符号隔开
-  //ly-梦-离-羊
-  '4fc147a47a2b45f2ac7e31c3e1315976@ed87892d286f4f7397b1317650dbec57@c7185dd64d3847999cca6b0081495daa@d28ca23ddb934143801ce74229927ac2',
+  //ly-梦-铺
+  '4fc147a47a2b45f2ac7e31c3e1315976@ed87892d286f4f7397b1317650dbec57@031025a518804a9e9f28a62cd9930da5',
 ]
 let message = '', subTitle = '', option = {}, isFruitFinished = false;
 const retainWater = 100;//保留水滴大于多少g,默认100g;
